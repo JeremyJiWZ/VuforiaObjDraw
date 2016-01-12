@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 
 public class SampleApplication3DModel extends MeshObject
@@ -24,6 +25,7 @@ public class SampleApplication3DModel extends MeshObject
     private ByteBuffer textCoords;
     private ByteBuffer norms;
     int numVerts = 0;
+    private static final int maxBytes = 10000; //max bytes
     
     
     public void loadModel(AssetManager assetManager, String filename)
@@ -35,35 +37,46 @@ public class SampleApplication3DModel extends MeshObject
             is = assetManager.open(filename);
             BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is));
-            
-            String line = null;
-//
-//            int floatsToRead = Integer.parseInt(line);
-//            numVerts = floatsToRead / 3;
 
-            while (reader.readLine()!=null){
+            String line;
+
+//            String line = reader.readLine();
+//            numVerts = Integer.parseInt(line);
+//            int floatsToRead = numVerts*3;
+            verts = ByteBuffer.allocateDirect(maxBytes * 4);
+            verts.order(ByteOrder.nativeOrder());
+            textCoords=ByteBuffer.allocateDirect(maxBytes*4);
+            textCoords.order(ByteOrder.nativeOrder());
+            norms = ByteBuffer.allocateDirect(maxBytes*4);
+            norms.order(ByteOrder.nativeOrder());
+
+            while ((line=reader.readLine())!=null){
                 line=line.trim();
-                if (line.startsWith("v")) {
-                    String[] parts = line.split(" ");
-                    verts.putFloat(Float.parseFloat(parts[1]));
-                    verts.putFloat(Float.parseFloat(parts[2]));
-                    verts.putFloat(Float.parseFloat(parts[3]));
-                    numVerts++;
-                }
-                if (line.startsWith("vt")) {
-                    String[] parts = line.split(" ");
-                    int length = parts.length;
-                    for (int i = 1;i<length;i++)
-                        textCoords.putFloat(Float.parseFloat(parts[i]));
-                }
                 if (line.startsWith("vn")) {
                     String[] parts = line.split(" ");
                     norms.putFloat(Float.parseFloat(parts[1]));
                     norms.putFloat(Float.parseFloat(parts[2]));
                     norms.putFloat(Float.parseFloat(parts[3]));
                 }
+                else if (line.startsWith("vt")) {
+                    String[] parts = line.split(" ");
+                    int length = parts.length;
+                    for (int i = 1;i<length;i++)
+                        textCoords.putFloat(Float.parseFloat(parts[i]));
+                }
+                else if (line.startsWith("v")) {
+                    String[] parts = line.split(" ");
+//                    Log.e("line", line);
+                    verts.putFloat(Float.parseFloat(parts[1]));
+                    verts.putFloat(Float.parseFloat(parts[2]));
+                    verts.putFloat(Float.parseFloat(parts[3]));
+                    numVerts++;
+                }
             }
 
+            verts.rewind();
+            norms.rewind();
+            textCoords.rewind();
 //            //read v
 //            verts = ByteBuffer.allocateDirect(floatsToRead * 4);
 //            verts.order(ByteOrder.nativeOrder());
