@@ -114,6 +114,7 @@ public class UserDefinedTargets extends Activity implements
         loadTextures();
         
         mGestureDetector = new GestureDetector(this, new GestureListener());
+        
         mIsDroidDevice = android.os.Build.MODEL.toLowerCase().startsWith(
             "droid");
     }
@@ -491,10 +492,10 @@ public class UserDefinedTargets extends Activity implements
             {
                 // Uncomment this block to show and error message if
                 // the frame quality is Low
-                if (targetBuilder.getFrameQuality() == ImageTargetBuilder.FRAME_QUALITY.FRAME_QUALITY_LOW)
-                {
-                     showErrorDialogInUIThread();
-                }
+                //if (targetBuilder.getFrameQuality() == ImageTargetBuilder.FRAME_QUALITY.FRAME_QUALITY_LOW)
+                //{
+                //     showErrorDialogInUIThread();
+                //}
                 
                 String name;
                 do
@@ -585,7 +586,7 @@ public class UserDefinedTargets extends Activity implements
             ObjectTracker.getClassType());
         if (objectTracker != null)
             objectTracker.start();
-
+        
         return result;
     }
     
@@ -807,7 +808,11 @@ public class UserDefinedTargets extends Activity implements
     
     final public static int CMD_BACK = -1;
     final public static int CMD_EXTENDED_TRACKING = 1;
-    
+    final public static int CMD_CHECK_TARGET_CLOSET = 10;
+    final public static int CMD_CHECK_TARGET_SOFA = 20;
+    final public static int CMD_CHECK_TARGET_TOMB = 30;
+    final public static int CMD_CHECK_TARGET_TV = 40;
+
     // This method sets the additional views to be moved along with the GLView
     private void setSampleAppMenuAdditionalViews()
     {
@@ -825,9 +830,19 @@ public class UserDefinedTargets extends Activity implements
         group.addTextItem(getString(R.string.menu_back), -1);
         
         group = mSampleAppMenu.addGroup("", true);
-        group.addSelectionItem(getString(R.string.menu_extended_tracking),
-            CMD_EXTENDED_TRACKING, false);
-        
+        group.addSelectionItem(getString(R.string.menu_extended_tracking), CMD_EXTENDED_TRACKING, false);
+
+        group = mSampleAppMenu.addGroup("",false);
+        group.addImageButton(R.drawable.closet, CMD_CHECK_TARGET_CLOSET);
+
+        group = mSampleAppMenu.addGroup("",false);
+        group.addImageButton(R.drawable.tomb,CMD_CHECK_TARGET_TOMB);
+
+        group = mSampleAppMenu.addGroup("",false);
+        group.addImageButton(R.drawable.tv,CMD_CHECK_TARGET_TV);
+
+        group = mSampleAppMenu.addGroup("",false);
+        group.addImageButton(R.drawable.sofa,CMD_CHECK_TARGET_SOFA);
         mSampleAppMenu.attachMenu();
     }
     
@@ -883,7 +898,18 @@ public class UserDefinedTargets extends Activity implements
                     mExtendedTracking = !mExtendedTracking;
                 
                 break;
-            
+            case CMD_CHECK_TARGET_CLOSET:
+                mRenderer.setTargetChoosen(UserDefinedTargetRenderer.TARGET_CLOSET);
+                break;
+            case CMD_CHECK_TARGET_SOFA:
+                mRenderer.setTargetChoosen(UserDefinedTargetRenderer.TARGET_SOFA);
+                break;
+            case CMD_CHECK_TARGET_TOMB:
+                mRenderer.setTargetChoosen(UserDefinedTargetRenderer.TARGET_TOMB);
+                break;
+            case CMD_CHECK_TARGET_TV:
+                mRenderer.setTargetChoosen(UserDefinedTargetRenderer.TARGET_TV);
+                break;
         }
         
         return result;

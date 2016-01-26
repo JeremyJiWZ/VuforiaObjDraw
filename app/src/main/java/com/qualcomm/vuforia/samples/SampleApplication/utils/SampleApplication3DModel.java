@@ -20,23 +20,24 @@ import java.nio.ByteOrder;
 
 public class SampleApplication3DModel extends MeshObject
 {
-    
+
     private ByteBuffer verts;
     private ByteBuffer textCoords;
     private ByteBuffer norms;
+//    private ByteBuffer indices;
     int numVerts = 0;
-    private static final int maxBytes = 10000; //max bytes
-    
-    
+    private static final int maxBytes = 500000; //max bytes
+
+
     public void loadModel(AssetManager assetManager, String filename)
-        throws IOException
+            throws IOException
     {
         InputStream is = null;
         try
         {
             is = assetManager.open(filename);
             BufferedReader reader = new BufferedReader(
-                new InputStreamReader(is));
+                    new InputStreamReader(is));
 
             String line;
 
@@ -49,6 +50,8 @@ public class SampleApplication3DModel extends MeshObject
             textCoords.order(ByteOrder.nativeOrder());
             norms = ByteBuffer.allocateDirect(maxBytes*4);
             norms.order(ByteOrder.nativeOrder());
+//            indices = ByteBuffer.allocateDirect(maxBytes*4);
+//            indices.order(ByteOrder.nativeOrder());
 
             while ((line=reader.readLine())!=null){
                 line=line.trim();
@@ -65,13 +68,28 @@ public class SampleApplication3DModel extends MeshObject
                         textCoords.putFloat(Float.parseFloat(parts[i]));
                 }
                 else if (line.startsWith("v")) {
-                    String[] parts = line.split(" ");
+                    String[] parts = line.split("\\s+");
 //                    Log.e("line", line);
                     verts.putFloat(Float.parseFloat(parts[1]));
                     verts.putFloat(Float.parseFloat(parts[2]));
                     verts.putFloat(Float.parseFloat(parts[3]));
                     numVerts++;
                 }
+//                else if (line.startsWith("f")){
+//                    String[] parts = line.split(" ");
+//                    String[] part1 = parts[1].split("/");
+//                    String[] part2 = parts[2].split("/");
+//                    String[] part3 = parts[3].split("/");
+//                    indices.putInt(Integer.parseInt((part1[0])));
+//                    indices.putInt(Integer.parseInt((part1[1])));
+//                    indices.putInt(Integer.parseInt((part1[2])));
+//                    indices.putInt(Integer.parseInt((part2[0])));
+//                    indices.putInt(Integer.parseInt((part2[1])));
+//                    indices.putInt(Integer.parseInt((part2[2])));
+//                    indices.putInt(Integer.parseInt((part3[0])));
+//                    indices.putInt(Integer.parseInt((part3[1])));
+//                    indices.putInt(Integer.parseInt((part3[2])));
+//                }
             }
 
             verts.rewind();
@@ -109,15 +127,15 @@ public class SampleApplication3DModel extends MeshObject
 //                textCoords.putFloat(Float.parseFloat(reader.readLine()));
 //            }
 //            textCoords.rewind();
-            
+
         } finally
         {
             if (is != null)
                 is.close();
         }
     }
-    
-    
+
+
     @Override
     public Buffer getBuffer(BUFFER_TYPE bufferType)
     {
@@ -137,19 +155,19 @@ public class SampleApplication3DModel extends MeshObject
         }
         return result;
     }
-    
-    
+
+
     @Override
     public int getNumObjectVertex()
     {
         return numVerts;
     }
-    
-    
+
+
     @Override
     public int getNumObjectIndex()
     {
         return 0;
     }
-    
+
 }

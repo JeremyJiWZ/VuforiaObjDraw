@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="@dimen/menu_title"
+    android:fontFamily="sans-serif" 
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/menu_activities_list_padding_left"
+    android:paddingTop="@dimen/menu_activities_list_padding_top_down"
+    android:paddingBottom="@dimen/menu_activities_list_padding_top_down"
+/>
+<!-- From: file:/Users/jiwentadashi/Downloads/vuforia-sdk-android-5-0-10/samples/VuforiaSamples-5-0-10/app/src/main/res/layout/activities_list_text_view.xml -->

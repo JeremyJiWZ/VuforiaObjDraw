@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Vuforia</string>
+    <string name="app_name">专题研讨</string>
     <string name="app_description">Vuforia Sample Applications</string>
     
     <string name="button_start">Start</string>

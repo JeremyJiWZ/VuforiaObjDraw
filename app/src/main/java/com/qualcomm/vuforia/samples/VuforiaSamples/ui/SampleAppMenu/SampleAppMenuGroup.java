@@ -20,6 +20,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -53,6 +54,7 @@ public class SampleAppMenuGroup
     OnClickListener mClickListener;
     OnCheckedChangeListener mOnCheckedListener;
     OnCheckedChangeListener mOnRadioCheckedListener;
+    OnClickListener imageClickListener;
     
     
     @SuppressLint("InflateParams")
@@ -76,10 +78,8 @@ public class SampleAppMenuGroup
         mEntriesTextSize = mActivity.getResources().getDimension(
             R.dimen.menu_entries_text);
         
-        mEntriesSidesPadding = (int) mActivity.getResources().getDimension(
-            R.dimen.menu_entries_sides_padding);
-        mEntriesUpDownPadding = (int) mActivity.getResources().getDimension(
-            R.dimen.menu_entries_top_down_padding);
+        mEntriesSidesPadding = (int) mActivity.getResources().getDimension(R.dimen.menu_entries_sides_padding);
+        mEntriesUpDownPadding = (int) mActivity.getResources().getDimension(R.dimen.menu_entries_top_down_padding);
         mEntriesUpDownRadioPadding = (int) mActivity.getResources()
             .getDimension(R.dimen.menu_entries_top_down_radio_padding);
         dividerResource = R.layout.sample_app_menu_group_divider;
@@ -91,8 +91,7 @@ public class SampleAppMenuGroup
         TextView titleView = (TextView) mLayout
             .findViewById(R.id.menu_group_title);
         titleView.setText(title);
-        titleView.setTextSize(mActivity.getResources().getDimension(
-            R.dimen.menu_entries_title));
+        titleView.setTextSize(mActivity.getResources().getDimension(R.dimen.menu_entries_title));
         titleView.setClickable(false);
         
         if (!hasTitle)
@@ -102,7 +101,16 @@ public class SampleAppMenuGroup
                 .findViewById(R.id.menu_group_title_divider);
             mLayout.removeView(dividerView);
         }
-        
+
+        imageClickListener = new OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                int command = Integer.parseInt(view.getTag().toString());
+                mMenuInterface.menuProcess(command);
+                mSampleAppMenu.hide();
+            }
+        };
+
         mClickListener = new OnClickListener()
         {
             
@@ -179,8 +187,7 @@ public class SampleAppMenuGroup
         newTextView.setTextSize(mEntriesTextSize);
         newTextView.setTag(command);
         newTextView.setVisibility(View.VISIBLE);
-        newTextView.setPadding(mEntriesSidesPadding, mEntriesUpDownPadding,
-            mEntriesSidesPadding, mEntriesUpDownPadding);
+        newTextView.setPadding(mEntriesSidesPadding, mEntriesUpDownPadding, mEntriesSidesPadding, mEntriesUpDownPadding);
         newTextView.setClickable(true);
         newTextView.setOnClickListener(mClickListener);
         mLayout.addView(newTextView, mLayoutParams);
@@ -191,7 +198,20 @@ public class SampleAppMenuGroup
         return newTextView;
         
     }
-    
+
+    public View addImageButton(int imResource,int command){
+
+        ImageButton imageButton = new ImageButton(mActivity);
+        imageButton.setTag(command);
+        imageButton.setLayoutParams(mLayoutParams);
+        imageButton.setImageResource(imResource);
+        imageButton.setOnClickListener(imageClickListener);
+        mLayout.addView(imageButton,mLayoutParams);
+
+        View divider = inflater.inflate(dividerResource, null);
+        mLayout.addView(divider, mLayoutParams);
+        return imageButton;
+    }
     
     @SuppressWarnings("deprecation")
     public View addSelectionItem(String text, int command, boolean on)
